@@ -5,7 +5,7 @@ int yylex();
 int yyerror(char *s);
 %} 
 
-%token NUMBER PLUS MOINS FOIS DIVIS OPEN_PAR CLOSE_PAR /* liste des terminaux */
+%token I V Af Sk Se If Th El Wh Do Pl Mo Mu /* liste des terminaux */
 
 %%
 S: E {printf("Le résultat de l'opération est: %d\n", $1);};
