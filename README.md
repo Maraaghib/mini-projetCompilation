@@ -1,1 +1,1 @@
-Mini-projet : interpr ́etation et compilation du langage IMP
+Mini-projet : interprétation et compilation du langage IMP
