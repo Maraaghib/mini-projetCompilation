@@ -37,7 +37,13 @@ Environment find(char *identifier, Environment environment) {
 }
 
 int affect(Environment environment, char *identifier, int value) {
-    return ;
+    Environment currentEnv;
+    if((currentEnv = find(identifier, environment)) != NULL){
+        currentEnv->value = value;
+        return EXIT_SUCCESS;
+    }
+
+    return EXIT_FAILURE;
 }
 
 int printEnvironment(Environment environment) {
