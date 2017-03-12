@@ -8,6 +8,8 @@ struct sEnvironment {
 };
 typedef struct sEnvironment* Environment;
 
+extern Environment envirAlloc();
+
 extern Environment initEnvironment(Environment environment, char* identifier);
 
 extern Environment find(char *identifier, Environment environment);
