@@ -25,7 +25,15 @@ Environment initEnvironment(Environment environment, char* identifier) {
 }
 
 Environment find(char *identifier, Environment environment) {
-    return ;
+    if(environment != NULL){
+        if (strcmp(environment->identifier, identifier) == 0) {
+            return environment;
+        }
+        else{
+            return find(identifier, environment->next);
+        }
+    }
+    return NULL;
 }
 
 int affect(Environment environment, char *identifier, int value) {
