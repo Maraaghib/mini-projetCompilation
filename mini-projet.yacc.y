@@ -6,6 +6,7 @@
 #include <string.h>
 
 #include "mini-projet.h"
+#include "environment.h"
 
 nodeType *constant(int value);
 nodeType *identifier(char* val);
@@ -37,6 +38,9 @@ E = Expressoin
 T = Terme
 F = Facteur
 */
+
+program : C { Environment environment = envirAlloc(); interprete(environment, $1); };
+
 C0	: V Af E			{ $$ = operation(Af, 2, identifier($1), $3); }
  	| Sk				{ $$ = operation(Sk, 2, NULL, NULL); }
  	| '(' C ')'			{ $$ = $2; }
