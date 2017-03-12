@@ -6,11 +6,13 @@
 
 #define LENGTH 20
 
-
+Environment envirAlloc() {
+    return (Environment)malloc(sizeof(struct sEnvironment));
+}
 
 Environment initEnvironment(Environment environment, char* identifier) {
     if(find(identifier, environment) == NULL){
-        if((headEnv = (Environment)malloc(sizeof(struct sEnvironment))) == NULL)
+        if(() == NULL)
             yyerror("ERROR: Out of memory !\n");
 
         if((headEnv->identifier = (char*)malloc(LENGTH * sizeof(struct char))) == NULL)
