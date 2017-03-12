@@ -47,7 +47,13 @@ int affect(Environment environment, char *identifier, int value) {
 }
 
 int printEnvironment(Environment environment) {
-    return ;
+    Environment tmp = environment; // Est-ce ça marche !?
+    while(tmp != NULL){
+        printf("Variable: %s || Valeur: %d \n", tmp->identifier, tmp->value);
+        tmp = tmp->next
+    }
+    printf("End of the environment !\n");
+    return EXIT_SUCCESS;
 }
 
 int getValue(Environment environment, char *identifier) {
