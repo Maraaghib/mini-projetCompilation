@@ -57,5 +57,9 @@ int printEnvironment(Environment environment) {
 }
 
 int getValue(Environment environment, char *identifier) {
-    return ;
+    Environment currentEnv;
+    if ((currentEnv = find(identifier, environment)) != NULL) {
+        return currentEnv->value;
+    }
+    return 0;
 }
