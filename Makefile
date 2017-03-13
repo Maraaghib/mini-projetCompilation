@@ -7,30 +7,31 @@ LDFLAGS = -lfl -ly
 SOURCES_Y := $(wildcard *.y)
 SOURCES_L := $(wildcard *.l)
 
-OBJECTS = y.tab.o lex.yy.o
+OBJECTS = y.tab.o lex.yy.o interpreterIMP.o #environment.o
 
-PROGS = iimp interpreterIMP
+PROGS = iimp 
 
 #.PHONY: all
 #all: $(PROGS)
 
 
-interpreterIMP: interpreterIMP.o
-	$(CC) $^ -o $@
-
-prog : $(OBJECTS)
+prog : $(OBJECTS) 
 	$(CC) $^ $(LDFLAGS) -o $@
 	
-interpreterIMP.o: utils/environment.c y.tab.h
 
-lex.yy.o: lex.yy.c
+lex.yy.o: lex.yy.c includes/mini-projet.h
+		$(CC) -c $(CFLAGS) $(CPPFLAGS) -o $@ $<
+		
+y.tab.o: y.tab.c y.tab.h includes/mini-projet.h includes/environment.h
+		$(CC) -c $(CFLAGS) $(CPPFLAGS) -o $@ $<
 
-y.tab.o: y.tab.c y.tab.h
-
+interpreterIMP.o: interpreterIMP.c y.tab.h includes/environment.h includes/mini-projet.h
+	$(CC) -c $(CFLAGS) $(CPPFLAGS) -o $@ $<
+	
 lex.yy.c: $(SOURCES_L) y.tab.h
 	lex $<
 
-y.tab.c: $(SOURCES_Y)
+y.tab.c: $(SOURCES_Y) 
 	yacc $^
 
 y.tab.h: $(SOURCES_Y)
@@ -38,7 +39,7 @@ y.tab.h: $(SOURCES_Y)
 
 .PHONY: clean
 clean :
-	-rm -f $(OBJECTS) $(PROGS) *.c *.h
+	-rm -f $(OBJECTS) $(PROGS) lex.yy.c y.tab.c *.h *.o
 
 
 

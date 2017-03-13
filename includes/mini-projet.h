@@ -1,3 +1,8 @@
+#ifndef MINI_H
+#define MINI_H
+
+
+
 typedef enum {typeCons, typeIdent, typeOper} nodeEnum;
 
 // Constants
@@ -27,3 +32,4 @@ typedef struct nodeTypeTag {
 	};
 } nodeType;
 
+#endif

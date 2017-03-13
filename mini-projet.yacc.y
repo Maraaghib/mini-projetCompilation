@@ -13,7 +13,9 @@ nodeType *identifier(char* val);
 nodeType *operation(int lexeme, int nbOper, ...);
 
 int yylex();
+int yyparse();
 int yyerror(const char *s);
+extern int execute(Environment environment, nodeType *lexeme);
 %}
 
 %union{
@@ -119,6 +121,7 @@ int yyerror(const char *s){
   fprintf( stderr, "%s\n", s );
   return 0;
 }
+
 
 int main(int argn, char **argv){
   yyparse(); //Il lance l'analyseur syntaxique qui lui appelle le yylex()

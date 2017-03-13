@@ -24,9 +24,9 @@ int interprete(Environment environment, nodeType *lexeme) {
                 case Af:    initEnvironment(environment, lexeme->oper.operN[0]->ident.value); return affect(environment, lexeme->oper.operN[0]->ident.value, interprete(environment, lexeme->oper.operN[1]));
                 case Se:    interprete(environment, lexeme->oper.operN[0]); return interprete(environment, lexeme->oper.operN[1]);
 
-                case Pl:    return interprete(environment, lexeme->oper.operN[0]) + interprete(environment, lexeme->oper.operN[0]);
-                case Mo:    return interprete(environment, lexeme->oper.operN[0]) - interprete(environment, lexeme->oper.operN[0]);
-                case Mu:    return interprete(environment, lexeme->oper.operN[0]) * interprete(environment, lexeme->oper.operN[0]);
+                case Pl:    return interprete(environment, lexeme->oper.operN[0]) + interprete(environment, lexeme->oper.operN[1]);
+                case Mo:    return interprete(environment, lexeme->oper.operN[0]) - interprete(environment, lexeme->oper.operN[1]);
+                case Mu:    return interprete(environment, lexeme->oper.operN[0]) * interprete(environment, lexeme->oper.operN[1]);
             }
     }
     return 0;
