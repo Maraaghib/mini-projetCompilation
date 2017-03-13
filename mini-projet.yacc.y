@@ -4,7 +4,6 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>
-
 #include "mini-projet.h"
 #include "environment.h"
 
@@ -13,7 +12,6 @@ nodeType *identifier(char* val);
 nodeType *operation(int lexeme, int nbOper, ...);
 
 int yylex();
-int yyparse();
 int yyerror(const char *s);
 extern int execute(Environment environment, nodeType *lexeme);
 %}
@@ -42,9 +40,9 @@ T = Terme
 F = Facteur
 */
 
-program : C { Environment environment = envirAlloc(); execute(environment, $1); };
+program : C { Environment environment = (Environment)malloc(sizeof(struct sEnvironment)); execute(environment, $1); };
 
-C0	: V Af E			{ $$ = operation(Af, 2, identifier($1), $3); }
+C0	: V Af E			{$$ = operation(Af, 2, identifier($1), $3); }
  	| Sk				{ $$ = operation(Sk, 2, NULL, NULL); }
  	| '(' C ')'			{ $$ = $2; }
  	| If E Th C El C0	{ $$ = operation(If, 3, $2, $4, $6); }
@@ -102,8 +100,11 @@ nodeType *operation(int lexeme, int nbOper, ...){
     nodeType *term;
 
     /* Allocate node, extending operN array */
-    if((term = malloc(sizeof(nodeType)) + (nbOper-1) * sizeof(nodeType *)) == NULL)
+    if((term = malloc(sizeof(nodeType))) == NULL)
         yyerror("ERROR: Out of memory !\n");
+    if((term->oper.operN = malloc((nbOper) * sizeof(nodeType *))) == NULL)
+        yyerror("ERROR: Out of memory !\n");
+
 
     /* Copy information */
     term->type = typeOper;

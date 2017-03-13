@@ -1,8 +1,6 @@
 #ifndef MINI_H
 #define MINI_H
 
-
-
 typedef enum {typeCons, typeIdent, typeOper} nodeEnum;
 
 // Constants
@@ -19,7 +17,7 @@ typedef struct {
 typedef struct {
 	int operT; // Opérateur
 	int nbOperN; // Nombre d'opérandes
-	struct nodeTypeTag *operN[1]; // Tableau de symboles (opérateurs, variables, constntes, ...)
+	struct nodeTypeTag **operN; // Tableau de symboles (opérateurs, variables, constntes, ...)
 } operNodeType;
 
 typedef struct nodeTypeTag {
