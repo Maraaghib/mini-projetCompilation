@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "bilquad.h"
-#include "environ.h"
+#include "environment.h"
 /*-------------------------------------------------------------------*/
 /* ----------------------------types---------------------------------*/
 /* QUAD,BILQUAD: definis dans bilquad.h                              */
@@ -19,7 +19,7 @@ QUAD creer_quad(char *etiq,int op,char *arg1,char *arg2,char *res)
   if (etiq !=NULL)
     {qd->ETIQ=Idalloc();
       strcpy(qd->ETIQ,etiq);}
-  qd->OP=op;
+  qd->OPER=op;
   if (arg1 !=NULL)
     {qd->ARG1=Idalloc();
       strcpy(qd->ARG1,arg1);}
@@ -28,22 +28,22 @@ QUAD creer_quad(char *etiq,int op,char *arg1,char *arg2,char *res)
       strcpy(qd->ARG2, arg2);}
   if (res!= NULL)
     {lres=strlen(res);
-      qd->RES=(char *)malloc(lres*sizeof(char));
-      strcpy(qd->RES,res);}
+      qd->DEST=(char *)malloc(lres*sizeof(char));
+      strcpy(qd->DEST,res);}
   return(qd);
 }
 
 /* retourne une biliste vide  */
-BILQUAD bilquad_vide() 
+BILQUAD bilquad_vide()
 {BILQUAD bq;
-  bq.debut=NULL;bq.fin=NULL;
+  bq.first=NULL;bq.last=NULL;
   return(bq);
 }
 
 /* retourne une biliste a un element  */
-BILQUAD creer_bilquad(QUAD qd) 
+BILQUAD creer_bilquad(QUAD qd)
 {BILQUAD bq;
-  bq.debut=qd;bq.fin=qd;
+  bq.first=qd;bq.last=qd;
   return(bq);
 }
 
@@ -55,7 +55,7 @@ QUAD rechq(char *chaine, QUAD qd)
     {if (strcmp(qcour->ETIQ,chaine)==0)
         return qcour;
       else
-	return rechq(chaine,qcour->SUIV);
+	return rechq(chaine,qcour->NEXT);
     }
   else
     return NULL;
@@ -63,21 +63,21 @@ QUAD rechq(char *chaine, QUAD qd)
 
 /*retourne le quad etiquete par chaine, NULL s'il n'y en a pas */
 QUAD rechbq(char *chaine, BILQUAD bq)
-{return(rechq(chaine,bq.debut));}
+{return(rechq(chaine,bq.first));}
 
 
 BILQUAD concatq(BILQUAD bq1, BILQUAD bq2)
 /* retourne la concatenation; ne detruit pas bqi; ne copie pas *bqi */
 /* peut creer une boucle ! */
 {BILQUAD bq;
-  if (bq1.fin!= NULL)
-    if (bq2.debut!=NULL)
-       { bq1.fin->SUIV=bq2.debut;
-        bq.debut=bq1.debut;
-        bq.fin=bq2.fin;
+  if (bq1.last!= NULL)
+    if (bq2.first!=NULL)
+       { bq1.last->NEXT=bq2.first;
+        bq.first=bq1.first;
+        bq.last=bq2.last;
         return(bq);}
     else
-      return(bq1);  
+      return(bq1);
   else
     return(bq2);
 }
@@ -94,7 +94,7 @@ char *nomop(int codop)
     case(Afc): return("Afc");
     case(St): return("St");
     case(Jp): return("Jp");
-    case(Jz): return("Jz");  
+    case(Jz): return("Jz");
     default:return(NULL);
     };
 }
@@ -105,7 +105,7 @@ void ecrire_quad(QUAD qd)
     {printf("%-10s ","");}
   else
     {printf("%-10s:",qd->ETIQ);}
-  printf("%-6s ",nomop(qd->OP));
+  printf("%-6s ",nomop(qd->OPER));
   if (qd->ARG1!=NULL)
     {printf("%-10s",qd->ARG1);}
   else
@@ -114,8 +114,8 @@ void ecrire_quad(QUAD qd)
     {printf("%-10s",qd->ARG2);}
   else
     {printf("%-10s","");}
-  if (qd->RES!=NULL)
-    {printf("%-10s\n",qd->RES);}
+  if (qd->DEST!=NULL)
+    {printf("%-10s\n",qd->DEST);}
   else
     {printf("\n");}
   }
@@ -123,10 +123,8 @@ void ecrire_quad(QUAD qd)
 /* affiche la biliste de quad */
 void ecrire_bilquad(BILQUAD bq)
 {QUAD qcour;
-  qcour=bq.debut;
+  qcour=bq.first;
   while(qcour!=NULL)
     {ecrire_quad(qcour);
-      qcour=qcour->SUIV;}
+      qcour=qcour->NEXT;}
 }
-
-
