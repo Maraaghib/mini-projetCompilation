@@ -1,6 +1,7 @@
 #ifndef ENVIRONMENT_H
 #define ENVIRONMENT_H
 
+/* ----------------------------types--------------------------------------------*/
 #include "iimp.h"
 
 struct sEnvironment {
@@ -10,6 +11,20 @@ struct sEnvironment {
 };
 typedef struct sEnvironment* Environment;
 
+/* ------------------CONSTANTES -------------------------------------------------*/
+#define MAXIDENT 16          /* long max d'un identificateur de variable         */
+#define MAXQUAD  5*MAXIDENT  /* long max d'un quadruplet c3a                     */
+#define Pl 257
+#define Mo 258
+#define Mu 259
+#define Af 260
+#define Afc 261
+#define Sk 262
+#define Jp 263
+#define Jz 264
+#define St 265
+
+/*------------------FONCTIONS ---------------------------------------------------*/
 extern Environment envirAlloc();
 
 extern int initEnvironment(Environment *environment, char* identifier);
