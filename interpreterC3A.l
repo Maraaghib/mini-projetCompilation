@@ -1,3 +1,5 @@
+/* https://services.emi.u-bordeaux.fr/projet/git/pcla/blob/HEAD:/src/c3a.l */
+
 %s ETIQ OPER ARG1 ARG2 DEST
 %{
 	#include <stdio.h>
@@ -44,3 +46,37 @@
 
 .|\n 		{}
 %%
+
+void interpretC3A(Environment environment, QUAD cursor){
+	while(cursor != NULL){
+		switch (cursor->OPER) {
+			case Pl:
+			case Mo:
+			case Mu: 	initEnvironment(&environment, cursor->DEST);
+						affect(environment, cursor->DEST, evaluate(cursor->OPER, getValue(environment, cursor->ARG1), getValue(environment, cursor->ARG1)));
+						break;
+
+			case Af:	initEnvironment(&environment, cursor->ARG1);
+						affect(environment, cursor->ARG1, getValue(environment, cursor->ARG2));
+						break;
+
+			case Afc:	initEnvironment(&environment, cursor->DEST);
+						affect(environment, cursor->DEST, atoi(cursor->ARG1));
+						break;
+
+			case Sk:
+
+			case Jp:
+
+			case Jz:
+
+			case St:
+						printEnvironment(environment);
+						return;
+
+			default: break;
+		}
+
+		cursor = cursor->NEXT;
+	}
+}
