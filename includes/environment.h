@@ -1,7 +1,7 @@
 #ifndef ENVIRONMENT_H
 #define ENVIRONMENT_H
 
-#include "mini-projet.h"
+#include "iimp.h"
 
 struct sEnvironment {
     char *identifier;

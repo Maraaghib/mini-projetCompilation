@@ -3,7 +3,7 @@
 #include <string.h>
 
 #include "y.tab.h"
-#include "mini-projet.h"
+#include "iimp.h"
 #include "environment.h"
 
 char *strdup(const char *);

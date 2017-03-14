@@ -5,7 +5,7 @@
 	char *strdup(const char *);
 	int fileno(FILE *);
 	#include "y.tab.h"
-	#include "mini-projet.h"
+	#include "iimp.h"
 %}
 
 %%

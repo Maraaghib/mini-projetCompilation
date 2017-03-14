@@ -19,13 +19,13 @@ $(PROGS) : $(OBJECTS)
 	$(CC) $^ $(LDFLAGS) -o $@
 
 
-lex.yy.o: lex.yy.c includes/mini-projet.h
+lex.yy.o: lex.yy.c includes/iimp.h
 		$(CC) -c $(CFLAGS) $(CPPFLAGS) -o $@ $<
 
-y.tab.o: y.tab.c y.tab.h includes/mini-projet.h includes/environment.h
+y.tab.o: y.tab.c y.tab.h includes/iimp.h includes/environment.h
 		$(CC) -c $(CFLAGS) $(CPPFLAGS) -o $@ $<
 
-interpreterIMP.o: interpreterIMP.c y.tab.h includes/environment.h includes/mini-projet.h
+interpreterIMP.o: interpreterIMP.c y.tab.h includes/environment.h includes/iimp.h
 	$(CC) -c $(CFLAGS) $(CPPFLAGS) -o $@ $<
 
 lex.yy.c: $(SOURCES_L) y.tab.h
