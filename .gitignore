@@ -1,3 +1,12 @@
+#Executable of this project
+iimp
+
+# Files produced by Bison/Yacc and Flex/Lex
+lex.yy.c
+y.tab.c
+y.tab.h
+
+
 # Object files
 *.o
 *.ko
@@ -31,3 +40,5 @@
 # Debug files
 *.dSYM/
 *.su
+
+
