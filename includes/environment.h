@@ -12,7 +12,7 @@ typedef struct sEnvironment* Environment;
 
 extern Environment envirAlloc();
 
-extern int initEnvironment(Environment environment, char* identifier);
+extern int initEnvironment(Environment *environment, char* identifier);
 
 extern Environment find(char *identifier, Environment environment);
 
@@ -22,8 +22,8 @@ extern int printEnvironment(Environment environment);
 
 extern int getValue(Environment environment, char *identifier);
 
-extern int interprete(Environment environment, nodeType *lexeme);
+extern int interprete(Environment *environment, nodeType *lexeme);
 
-extern int execute(Environment environment, nodeType *lexeme);
+extern int execute(Environment *environment, nodeType *lexeme);
 
 #endif
