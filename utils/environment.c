@@ -26,9 +26,6 @@ int initEnvironment(Environment *environment, char* identifier) {
         headEnv->value = 0;
         headEnv->next = *environment;
         *environment = headEnv;
-        /*environment->identifier = strdup(identifier);
-        environment->value = headEnv->value;
-        environment->next = NULL;*/
         return EXIT_SUCCESS;
     }
     return EXIT_FAILURE;
@@ -64,12 +61,22 @@ int affect(Environment environment, char *identifier, int value) {
 int printEnvironment(Environment environment) {
     Environment tmp = environment; // Est-ce ça marche !?
     int cpt = 0;
-    while(tmp != NULL && tmp->identifier != NULL){
+    printf("\n-----------------------------------------\n");
+    printf("Number  | Identifier	|===>| Value	|\n");
+    printf("-----------------------------------------\n");
+    while(tmp != NULL && tmp->identifier != NULL){ // tmp->identifier = null
         cpt++;
-        printf("%d) Variable: %s || Valeur: %d \n", cpt, tmp->identifier, tmp->value);
+        if(cpt<10){
+        	printf("(0%d)	| %s	  	|===>| %d	|\n", cpt, tmp->identifier, tmp->value);
+    		printf("-----------------------------------------\n");
+    	}
+        else{
+        	printf("(%d) 	| %s	 	|===>| %d	|\n", cpt, tmp->identifier, tmp->value);
+		    printf("-----------------------------------------\n");
+		}
         tmp = tmp->next;
     }
-    printf("End of the environment !\n");
+    printf("\nEnd of the environment !\n\n");
     return EXIT_SUCCESS;
 }
 
