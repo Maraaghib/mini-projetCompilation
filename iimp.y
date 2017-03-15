@@ -40,6 +40,7 @@ T = Terme
 F = Facteur
 */
 
+// Faire un test pour exécuter soit l'interpréteur soit le compilateur de IMP
 program : C { Environment environment = (Environment)malloc(sizeof(struct sEnvironment)); execute(&environment, $1); };
 
 C0	: V Af E			{$$ = operation(Af, 2, identifier($1), $3); }

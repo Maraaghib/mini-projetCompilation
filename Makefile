@@ -26,7 +26,7 @@ interpreterC3A: interpreterC3A.yy.o environment.o bilquad.o
 interpreterC3A.yy.o: interpreterC3A.yy.c includes/environment.h includes/bilquad.h
 	$(CC) -c $(CFLAGS) $(CPPFLAGS) -o $@ $<
 
-interpreterC3A.yy.c: interpreterC3A.l 
+interpreterC3A.yy.c: interpreterC3A.l
 	lex -o $@ $<
 
 bilquad.o: utils/bilquad.c includes/bilquad.h includes/environment.h
@@ -39,7 +39,7 @@ environment.o: utils/environment.c includes/environment.h
 lex.yy.o: lex.yy.c includes/iimp.h
 		$(CC) -c $(CFLAGS) $(CPPFLAGS) -o $@ $<
 
-y.tab.o: y.tab.c y.tab.h includes/iimp.h 
+y.tab.o: y.tab.c y.tab.h includes/iimp.h
 		$(CC) -c $(CFLAGS) $(CPPFLAGS) -o $@ $<
 
 interpreterIMP.o: interpreterIMP.c y.tab.h  includes/iimp.h

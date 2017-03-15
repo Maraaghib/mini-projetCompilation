@@ -101,12 +101,3 @@ int evaluate(int oper, int arg1, int arg2){
     }
   return(0);
 }
-
-
-
-
-
-
-
-
-
