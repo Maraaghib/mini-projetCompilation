@@ -5,42 +5,44 @@ VPATH =
 LDFLAGS = -lfl -ly
 
 SOURCES_Y := $(wildcard *.y)
-SOURCES_L := $(wildcard *.l)
+#SOURCES_L := $(wildcard *.l)
+SOURCES_L = iimp.l
 
 OBJECTS = y.tab.o lex.yy.o interpreterIMP.o #environment.o
 
-PROGS = iimp
+PROGS = iimp interpreterC3A
 
-#.PHONY: all
-#all: $(PROGS)
+.PHONY: all
+all: $(PROGS)
 
 # Interpreter of Code à 3 Adresses (C3A)
+iimp : $(OBJECTS)
+	$(CC) $^ $(LDFLAGS) -o $@
+
+
 interpreterC3A: interpreterC3A.yy.o environment.o bilquad.o
 	$(CC) $^ $(LDFLAGS) -o $@
 
-interpreterC3A.yy.o: interpreterC3A.yy.c environment.h bilquad.h
+interpreterC3A.yy.o: interpreterC3A.yy.c includes/environment.h includes/bilquad.h
 	$(CC) -c $(CFLAGS) $(CPPFLAGS) -o $@ $<
 
-interpreterC3A.yy.c: interpreterC3A.l #environment.h bilquad.h
-	lex $<
+interpreterC3A.yy.c: interpreterC3A.l 
+	lex -o $@ $<
 
-bilquad.o: bilquad.c bilquad.h environment.h
+bilquad.o: utils/bilquad.c includes/bilquad.h includes/environment.h
 	$(CC) -c $(CFLAGS) $(CPPFLAGS) -o $@ $<
 
-environment.o: environment.c environment.h
+environment.o: utils/environment.c includes/environment.h
 	$(CC) -c $(CFLAGS) $(CPPFLAGS) -o $@ $<
 
-# Intrepreter of IMP commands
-iimp : $(OBJECTS)
-	$(CC) $^ $(LDFLAGS) -o $@
 
 lex.yy.o: lex.yy.c includes/iimp.h
 		$(CC) -c $(CFLAGS) $(CPPFLAGS) -o $@ $<
 
-y.tab.o: y.tab.c y.tab.h includes/iimp.h includes/environment.h
+y.tab.o: y.tab.c y.tab.h includes/iimp.h 
 		$(CC) -c $(CFLAGS) $(CPPFLAGS) -o $@ $<
 
-interpreterIMP.o: interpreterIMP.c y.tab.h includes/environment.h includes/iimp.h
+interpreterIMP.o: interpreterIMP.c y.tab.h  includes/iimp.h
 	$(CC) -c $(CFLAGS) $(CPPFLAGS) -o $@ $<
 
 lex.yy.c: $(SOURCES_L) y.tab.h
@@ -54,4 +56,4 @@ y.tab.h: $(SOURCES_Y)
 
 .PHONY: clean
 clean :
-	-rm -f $(OBJECTS) $(PROGS) lex.yy.c y.tab.c *.h *.o
+	-rm -f $(OBJECTS) $(PROGS) *.yy.c y.tab.c *.h *.o
