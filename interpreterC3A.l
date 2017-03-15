@@ -14,9 +14,9 @@
 %}
 
 %%
-<ETIQ>:[A-Za-z][A-Za-z0-9]* 			{
+<ETIQ>([A-Za-z][A-Za-z0-9]*)* 			{
 											BEGIN OPER;
-											etiq = strdup(yytext+1);
+											etiq = strdup(yytext);
 										}
 
 <OPER>:(Pl|Mo|Mu|Af|Afc|Sk|Jp|Jz|St)	{
@@ -37,9 +37,9 @@
 											arg2 = strdup(yytext+1);
 										}
 
-<DEST>[A-Za-z][A-Za-z0-9]* 				{
+<DEST>:[A-Za-z][A-Za-z0-9]* 				{
 											BEGIN ETIQ;
-											dest = strdup(yytext);
+											dest = strdup(yytext+1);
 											/* Creating a bilquad if it does not exist yet, otherwise concatenating a new one */
 											bilquad = (bilquad.first == NULL) ? creer_bilquad(creer_quad(etiq, oper, arg1, arg2, dest)) : concatq(bilquad, creer_bilquad(creer_quad(etiq, oper, arg1, arg2, dest)));
 										}
@@ -47,11 +47,13 @@
 .|\n 		{}
 %%
 
+// On  va lui paaser dans la main l'environment nouvellement créé et bilquad.first
 void interpretC3A(Environment environment, QUAD cursor){
 	while(cursor != NULL){
 		switch (cursor->OPER) {
-			case Pl:
-			case Mo:
+			// Dans chaque bien vérifier si les arguments ou les champs ne sont pas vides si l'opérateur en question les utilise
+			case Pl:	// Go to the next case
+			case Mo:	// Go to the next case
 			case Mu: 	initEnvironment(&environment, cursor->DEST);
 						affect(environment, cursor->DEST, evaluate(cursor->OPER, getValue(environment, cursor->ARG1), getValue(environment, cursor->ARG1)));
 						break;
@@ -64,14 +66,16 @@ void interpretC3A(Environment environment, QUAD cursor){
 						affect(environment, cursor->DEST, atoi(cursor->ARG1));
 						break;
 
-			case Sk:
+			case Sk:	// Nothing to do, go to he next instruction
+						break;
 
-			case Jp:
+			case Jp:	cursor = rechbq(cursor->DEST, bilquad);
+						break;
 
-			case Jz:
+			case Jz:	cursor = (getValue(environment, cursor->ARG1) == 0) ? rechbq(cursor->DEST, bilquad) : cursor->NEXT;
+						break;
 
-			case St:
-						printEnvironment(environment);
+			case St:	// cursor->NEXT = NULL; ???
 						return;
 
 			default: break;
@@ -79,4 +83,13 @@ void interpretC3A(Environment environment, QUAD cursor){
 
 		cursor = cursor->NEXT;
 	}
+}
+
+int main(int argc, char const *argv[]) {
+	yylex();
+	Environment environment = envirAlloc();
+	interpretC3A(environment, bilquad.first);
+	printEnvironment(environment);
+
+	return EXIT_SUCCESS;
 }
