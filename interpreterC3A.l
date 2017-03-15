@@ -17,56 +17,68 @@
 %}
 
 %%
-<ETIQUETTE>([A-Za-z][A-Za-z0-9]*)* 			{
-											BEGIN OPERATOR;
+<ETIQUETTE>([a-zA-Z][A-Za-z0-9]*)*			{
+												BEGIN OPERATOR;
 											etiq = strdup(yytext);
 										}
 
 <OPERATOR>:(Pl|Mo|Mu|Af|Afc|Sk|Jp|Jz|St)	{
-											BEGIN ARGUMENT1;
-											for(int op = 257; op < 266; op++){
+												BEGIN ARGUMENT1;
+											for(int op = PL; op <= ST; op++){
 												if(strcmp(nomop(op), yytext+1) == 0)
 													oper = op;
 											}
 										}
 
-<ARGUMENT1>:([A-Za-z][A-Za-z0-9]*|[0-9]+)	{
-											BEGIN ARGUMENT2;
+<ARGUMENT1>:([A-Za-z][A-Za-z0-9]*|[0-9]+)*	{
+												BEGIN ARGUMENT2;
 											arg1 = strdup(yytext+1);
 										}
 
-<ARGUMENT2>:[A-Za-z][A-Za-z0-9]*				{
-											BEGIN DESTINATION;
+<ARGUMENT2>:([A-Za-z][A-Za-z0-9]*)*			{
+												BEGIN DESTINATION;
 											arg2 = strdup(yytext+1);
 										}
 
-<DESTINATION>:[A-Za-z][A-Za-z0-9]* 				{
-											BEGIN ETIQUETTE;
+<DESTINATION>:([A-Za-z][A-Za-z0-9]*)* 			{
+												
 											dest = strdup(yytext+1);
 											/* Creating a bilquad if it does not exist yet, otherwise concatenating a new one */
-											bilquad = (bilquad.first == NULL) ? creer_bilquad(creer_quad(etiq, oper, arg1, arg2, dest)) : concatq(bilquad, creer_bilquad(creer_quad(etiq, oper, arg1, arg2, dest)));
+											
 										}
+										
+										
 
-.|\n 		{}
+<DESTINATION>[ \t\n]*\n		{
+								BEGIN ETIQUETTE;
+								QUAD Quad = creer_quad(etiq, oper, arg1, arg2, dest);
+								BILQUAD tmp = creer_bilquad(Quad);
+								//bilquad = (bilquad.first == NULL) ? creer_bilquad(Quad) : concatq(bilquad, creer_bilquad(Quad));
+								 bilquad = concatq(bilquad, tmp);
+								
+							}
+[ \t\n]+ ; /* ignore whitespace */
+
+. {printf("Expression error !\n"); return EXIT_FAILURE;}
+				
 %%
 
-// On  va lui paaser dans la main l'environment nouvellement créé et bilquad.first
-void interpretC3A(Environment environment, QUAD cursor){
+void interpretC3A(Environment *environment, QUAD cursor){
 	while(cursor != NULL){
 		switch (cursor->OPER) {
 			// Dans chaque bien vérifier si les arguments ou les champs ne sont pas vides si l'opérateur en question les utilise
 			case PL:	// Go to the next case
 			case MO:	// Go to the next case
-			case MU: 	initEnvironment(&environment, cursor->DEST);
-						affect(environment, cursor->DEST, evaluate(cursor->OPER, getValue(environment, cursor->ARG1), getValue(environment, cursor->ARG1)));
+			case MU: 	initEnvironment(environment, cursor->DEST);
+						affect(*environment, cursor->DEST, evaluate(cursor->OPER, getValue(*environment, cursor->ARG1), getValue(*environment, cursor->ARG2)));
 						break;
 
-			case AF:	initEnvironment(&environment, cursor->ARG1);
-						affect(environment, cursor->ARG1, getValue(environment, cursor->ARG2));
+			case AF:	initEnvironment(environment, cursor->ARG1);
+						affect(*environment, cursor->ARG1, getValue(*environment, cursor->ARG2));
 						break;
 
-			case AFc:	initEnvironment(&environment, cursor->DEST);
-						affect(environment, cursor->DEST, atoi(cursor->ARG1));
+			case AFc:	initEnvironment(environment, cursor->DEST);
+						affect(*environment, cursor->DEST, atoi(cursor->ARG1));
 						break;
 
 			case SK:	// Nothing to do, go to he next instruction
@@ -75,11 +87,10 @@ void interpretC3A(Environment environment, QUAD cursor){
 			case JP:	cursor = rechbq(cursor->DEST, bilquad);
 						break;
 
-			case JZ:	cursor = (getValue(environment, cursor->ARG1) == 0) ? rechbq(cursor->DEST, bilquad) : cursor->NEXT;
+			case JZ:	cursor = (getValue(*environment, cursor->ARG1) == 0) ? rechbq(cursor->DEST, bilquad) : cursor->NEXT;
 						break;
 
-			case ST:	// cursor->NEXT = NULL; ???
-						return;
+			case ST:	return;
 
 			default: break;
 		}
@@ -89,9 +100,10 @@ void interpretC3A(Environment environment, QUAD cursor){
 }
 
 int main(int argc, char const *argv[]) {
+	BEGIN(ETIQUETTE);
 	yylex();
 	Environment environment = envirAlloc();
-	interpretC3A(environment, bilquad.first);
+	interpretC3A(&environment, bilquad.first);
 	printEnvironment(environment);
 
 	return EXIT_SUCCESS;
