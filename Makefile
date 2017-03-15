@@ -14,10 +14,25 @@ PROGS = iimp
 #.PHONY: all
 #all: $(PROGS)
 
-
-$(PROGS) : $(OBJECTS)
+# Interpreter of Code à 3 Adresses (C3A)
+interpreterC3A: interpreterC3A.yy.o environment.o bilquad.o
 	$(CC) $^ $(LDFLAGS) -o $@
 
+interpreterC3A.yy.o: interpreterC3A.yy.c environment.h bilquad.h
+	$(CC) -c $(CFLAGS) $(CPPFLAGS) -o $@ $<
+
+interpreterC3A.yy.c: interpreterC3A.l #environment.h bilquad.h
+	lex $<
+
+bilquad.o: bilquad.c bilquad.h environment.h
+	$(CC) -c $(CFLAGS) $(CPPFLAGS) -o $@ $<
+
+environment.o: environment.c environment.h
+	$(CC) -c $(CFLAGS) $(CPPFLAGS) -o $@ $<
+
+# Intrepreter of IMP commands
+iimp : $(OBJECTS)
+	$(CC) $^ $(LDFLAGS) -o $@
 
 lex.yy.o: lex.yy.c includes/iimp.h
 		$(CC) -c $(CFLAGS) $(CPPFLAGS) -o $@ $<
