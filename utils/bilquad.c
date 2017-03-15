@@ -17,14 +17,14 @@ QUAD creer_quad(char *etiq,int op,char *arg1,char *arg2,char *res)
 {QUAD qd;int lres;
   qd=(struct cellquad *)malloc(sizeof(struct cellquad));
   if (etiq !=NULL)
-    {qd->ETIQ=Idalloc();
+    {qd->ETIQ=indentAlloc();
       strcpy(qd->ETIQ,etiq);}
   qd->OPER=op;
   if (arg1 !=NULL)
-    {qd->ARG1=Idalloc();
+    {qd->ARG1=indentAlloc();
       strcpy(qd->ARG1,arg1);}
   if (arg2 !=NULL)
-    {qd->ARG2=Idalloc();
+    {qd->ARG2=indentAlloc();
       strcpy(qd->ARG2, arg2);}
   if (res!= NULL)
     {lres=strlen(res);
@@ -86,15 +86,15 @@ BILQUAD concatq(BILQUAD bq1, BILQUAD bq2)
 /* les codes d'op sont definis dans environ.h              */
 char *nomop(int codop)
 {switch(codop)
-    {case(Af): return("Af");
-    case(Sk): return("Sk");
-    case(Pl): return("Pl");
-    case(Mo): return("Mo");
-    case(Mu): return("Mu");
-    case(Afc): return("Afc");
-    case(St): return("St");
-    case(Jp): return("Jp");
-    case(Jz): return("Jz");
+    {case(AF): return("Af");
+    case(SK): return("Sk");
+    case(PL): return("Pl");
+    case(MO): return("Mo");
+    case(MU): return("Mu");
+    case(AFc): return("Afc");
+    case(ST): return("St");
+    case(JP): return("Jp");
+    case(JZ): return("Jz");
     default:return(NULL);
     };
 }

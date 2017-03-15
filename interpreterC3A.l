@@ -1,6 +1,6 @@
 /* https://services.emi.u-bordeaux.fr/projet/git/pcla/blob/HEAD:/src/c3a.l */
 
-%s ETIQ OPER ARG1 ARG2 DEST
+%s ETIQUETTE OPERATOR ARGUMENT1 ARGUMENT2 DESTINATION
 %{
 	#include <stdio.h>
 	#include <stdlib.h>
@@ -8,37 +8,40 @@
 	#include "bilquad.h"
 	#include "environment.h"
 
-	BILQUAD bilquad = bilquad_vide();
-	char* etiq, arg1, arg2, dest
+	BILQUAD bilquad;
+	char *etiq, *arg1, *arg2, *dest;
 	int oper = 0;
+	
+	char *strdup(const char *s);
+	int fileno(FILE *stream);
 %}
 
 %%
-<ETIQ>([A-Za-z][A-Za-z0-9]*)* 			{
-											BEGIN OPER;
+<ETIQUETTE>([A-Za-z][A-Za-z0-9]*)* 			{
+											BEGIN OPERATOR;
 											etiq = strdup(yytext);
 										}
 
-<OPER>:(Pl|Mo|Mu|Af|Afc|Sk|Jp|Jz|St)	{
-											BEGIN ARG1;
+<OPERATOR>:(Pl|Mo|Mu|Af|Afc|Sk|Jp|Jz|St)	{
+											BEGIN ARGUMENT1;
 											for(int op = 257; op < 266; op++){
 												if(strcmp(nomop(op), yytext+1) == 0)
 													oper = op;
 											}
 										}
 
-<ARG1>:([A-Za-z][A-Za-z0-9]*|[0-9]+)	{
-											BEGIN ARG2;
+<ARGUMENT1>:([A-Za-z][A-Za-z0-9]*|[0-9]+)	{
+											BEGIN ARGUMENT2;
 											arg1 = strdup(yytext+1);
 										}
 
-<ARG2>:[A-Za-z][A-Za-z0-9]*				{
-											BEGIN DEST;
+<ARGUMENT2>:[A-Za-z][A-Za-z0-9]*				{
+											BEGIN DESTINATION;
 											arg2 = strdup(yytext+1);
 										}
 
-<DEST>:[A-Za-z][A-Za-z0-9]* 				{
-											BEGIN ETIQ;
+<DESTINATION>:[A-Za-z][A-Za-z0-9]* 				{
+											BEGIN ETIQUETTE;
 											dest = strdup(yytext+1);
 											/* Creating a bilquad if it does not exist yet, otherwise concatenating a new one */
 											bilquad = (bilquad.first == NULL) ? creer_bilquad(creer_quad(etiq, oper, arg1, arg2, dest)) : concatq(bilquad, creer_bilquad(creer_quad(etiq, oper, arg1, arg2, dest)));
@@ -52,30 +55,30 @@ void interpretC3A(Environment environment, QUAD cursor){
 	while(cursor != NULL){
 		switch (cursor->OPER) {
 			// Dans chaque bien vérifier si les arguments ou les champs ne sont pas vides si l'opérateur en question les utilise
-			case Pl:	// Go to the next case
-			case Mo:	// Go to the next case
-			case Mu: 	initEnvironment(&environment, cursor->DEST);
+			case PL:	// Go to the next case
+			case MO:	// Go to the next case
+			case MU: 	initEnvironment(&environment, cursor->DEST);
 						affect(environment, cursor->DEST, evaluate(cursor->OPER, getValue(environment, cursor->ARG1), getValue(environment, cursor->ARG1)));
 						break;
 
-			case Af:	initEnvironment(&environment, cursor->ARG1);
+			case AF:	initEnvironment(&environment, cursor->ARG1);
 						affect(environment, cursor->ARG1, getValue(environment, cursor->ARG2));
 						break;
 
-			case Afc:	initEnvironment(&environment, cursor->DEST);
+			case AFc:	initEnvironment(&environment, cursor->DEST);
 						affect(environment, cursor->DEST, atoi(cursor->ARG1));
 						break;
 
-			case Sk:	// Nothing to do, go to he next instruction
+			case SK:	// Nothing to do, go to he next instruction
 						break;
 
-			case Jp:	cursor = rechbq(cursor->DEST, bilquad);
+			case JP:	cursor = rechbq(cursor->DEST, bilquad);
 						break;
 
-			case Jz:	cursor = (getValue(environment, cursor->ARG1) == 0) ? rechbq(cursor->DEST, bilquad) : cursor->NEXT;
+			case JZ:	cursor = (getValue(environment, cursor->ARG1) == 0) ? rechbq(cursor->DEST, bilquad) : cursor->NEXT;
 						break;
 
-			case St:	// cursor->NEXT = NULL; ???
+			case ST:	// cursor->NEXT = NULL; ???
 						return;
 
 			default: break;

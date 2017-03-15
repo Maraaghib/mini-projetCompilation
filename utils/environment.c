@@ -4,8 +4,13 @@
 
 #include "environment.h"
 
+char *strdup(const char *s);
 
 #define LENGTH 20
+
+char *indentAlloc(){
+	return((char *)malloc(MAXIDENT*sizeof(char)));
+}
 
 Environment envirAlloc() {
     return (Environment)malloc(sizeof(struct sEnvironment));
@@ -75,3 +80,26 @@ int getValue(Environment environment, char *identifier) {
     }
     return 0;
 }
+
+int evaluate(int oper, int arg1, int arg2){
+	switch(oper) {
+		case PL:
+			return(arg1 + arg2);
+		case MO:
+		  	return(arg1 - arg2);
+		case MU:
+		  	return(arg1 * arg2);
+		default:
+      		return(0);
+    }
+  return(0);
+}
+
+
+
+
+
+
+
+
+
