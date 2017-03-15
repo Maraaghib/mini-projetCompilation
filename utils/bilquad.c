@@ -99,9 +99,9 @@ char *nomop(int codop)
     };
 }
 
-/* affiche le quadruplet (pour generer code); puis saute a la ligne */
-void ecrire_quad(QUAD qd)
-{ if(strcmp(qd->ETIQ,"") == 0)       /* etiquette= mot vide */
+/* Displays the quadruplet (to generate code); Then jump to the line */
+void printQuad(QUAD qd)
+{ if(strcmp(qd->ETIQ,"") == 0)       /* Etiquette = empty word */
     {printf("%-10s ","");}
   else
     {printf("%-10s:",qd->ETIQ);}
@@ -121,10 +121,10 @@ void ecrire_quad(QUAD qd)
   }
 
 /* affiche la biliste de quad */
-void ecrire_bilquad(BILQUAD bq)
+void printBilquad(BILQUAD bq)
 {QUAD qcour;
   qcour=bq.first;
   while(qcour!=NULL)
-    {ecrire_quad(qcour);
+    {printQuad(qcour);
       qcour=qcour->NEXT;}
 }
