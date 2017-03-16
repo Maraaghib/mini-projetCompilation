@@ -1,8 +1,9 @@
 #Executable of this project
 iimp
+interpreterC3A
 
 # Files produced by Bison/Yacc and Flex/Lex
-lex.yy.c
+*.yy.c
 y.tab.c
 y.tab.h
 
