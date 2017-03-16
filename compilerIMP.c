@@ -196,17 +196,6 @@ char *compileIMP(Environment *environment, nodeType *lexeme) {
                             val1 = strdup(compileIMP(environment, lexeme->oper.operN[0]));
                             val2 = strdup(compileIMP(environment, lexeme->oper.operN[1]));
                             if((strncmp(val2, "0", 1) >= 0) && (strncmp(val2, "9", 1) <= 0)){ // Si le premier caractère est un chiffre
-                              /*sprintf(str, "ET%d", (numET+1));
-                              etiq = strdup(str);
-                              oper = AFc;
-                              arg1 = strdup(val2);
-                              arg2 = strdup("");
-                              sprintf(str, "CT%d", numCT++);
-                              dest = strdup(str);
-                              Quad = creer_quad(etiq, oper, arg1, arg2, dest);
-                              tmp = creer_bilquad(Quad);
-                              bilquad = concatq(bilquad, tmp);*/
-
                               sprintf(str, "ET%d", numET++);
                               numET++;
                               etiq = strdup(str);
@@ -247,56 +236,45 @@ char *compileIMP(Environment *environment, nodeType *lexeme) {
 
                 case Se:    compileIMP(environment, lexeme->oper.operN[0]); return compileIMP(environment, lexeme->oper.operN[1]);
 
-                case Pl:    val1 = strdup(compileIMP(environment, lexeme->oper.operN[0]));
-                            val2 = strdup(compileIMP(environment, lexeme->oper.operN[1]));
-                            if((strncmp(val2, "0", 1) >= 0) && (strncmp(val2, "9", 1) <= 0)){ // Si le premier caractère est un chiffre
-                              sprintf(str, "ET%d", (numET+1));
-                              etiq = strdup(str);
-                              oper = AFc;
-                              arg1 = strdup(val2);
-                              arg2 = strdup("");
-                              sprintf(str, "CT%d", numCT++);
-                              dest = strdup(str);
-                              Quad = creer_quad(etiq, oper, arg1, arg2, dest);
-                              tmp = creer_bilquad(Quad);
-                              bilquad = concatq(bilquad, tmp);
+                case Pl:  val1 = strdup(compileIMP(environment, lexeme->oper.operN[0]));
+                          val2 = strdup(compileIMP(environment, lexeme->oper.operN[1]));
+                          if((strncmp(val1, "0", 1) >= 0) && (strncmp(val1, "9", 1) <= 0)){ // Si le premier caractère est un chiffre
+                            sprintf(str, "ET%d", numET++);
+                            numET++;
+                            etiq = strdup(str);
+                            oper = PL;
+                            arg1 = strdup(val1);
+                            sprintf(str, "CT%d", numCT++);
+                            arg2 = strdup(str);
+                            dest = strdup("");
+                            Quad = creer_quad(etiq, oper, arg1, arg2, dest);
+                            tmp = creer_bilquad(Quad);
+                            bilquad = concatq(bilquad, tmp);
+                          }
+                          else{
+                            sprintf(str, "ET%d", numET+1);
+                            etiq = strdup(str);
+                            oper = SK;
+                            arg1 = strdup("");
+                            arg2 = strdup("");
+                            dest = strdup(val2);
+                            Quad = creer_quad(etiq, oper, arg1, arg2, dest);
+                            tmp = creer_bilquad(Quad);
+                            bilquad = concatq(bilquad, tmp);
 
-                              sprintf(str, "ET%d", numET++);
-                              numET++;
-                              etiq = strdup(str);
-                              oper = AF;
-                              arg1 = strdup(val1);
-                              sprintf(str, "CT%d", numCT++);
-                              arg2 = strdup(str);
-                              dest = strdup("");
-                              Quad = creer_quad(etiq, oper, arg1, arg2, dest);
-                              tmp = creer_bilquad(Quad);
-                              bilquad = concatq(bilquad, tmp);
-                            }
-                            else{
-                              sprintf(str, "ET%d", numET+1);
-                              etiq = strdup(str);
-                              oper = SK;
-                              arg1 = strdup("");
-                              arg2 = strdup("");
-                              dest = strdup(val2);
-                              Quad = creer_quad(etiq, oper, arg1, arg2, dest);
-                              tmp = creer_bilquad(Quad);
-                              bilquad = concatq(bilquad, tmp);
+                            sprintf(str, "ET%d", numET++);
+                            numET++;
+                            etiq = strdup(str);
+                            oper = AF;
+                            arg1 = strdup(val1);
+                            arg2 = strdup(val2);
+                            dest = strdup("");
+                            Quad = creer_quad(etiq, oper, arg1, arg2, dest);
+                            tmp = creer_bilquad(Quad);
+                            bilquad = concatq(bilquad, tmp);
+                          }
 
-                              sprintf(str, "ET%d", numET++);
-                              numET++;
-                              etiq = strdup(str);
-                              oper = AF;
-                              arg1 = strdup(val1);
-                              arg2 = strdup(val2);
-                              dest = strdup("");
-                              Quad = creer_quad(etiq, oper, arg1, arg2, dest);
-                              tmp = creer_bilquad(Quad);
-                              bilquad = concatq(bilquad, tmp);
-                            }
-
-                            break;
+                          break;
 
                             //return compileIMP(environment, lexeme->oper.operN[0]) + compileIMP(environment, lexeme->oper.operN[1]);
                 case Mo:    //return compileIMP(environment, lexeme->oper.operN[0]) - compileIMP(environment, lexeme->oper.operN[1]);
