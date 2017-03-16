@@ -13,18 +13,19 @@
 /*---------------------quadruplets-----------------------------------*/
 
 /* retourne un quadruplet (avec etiquette etiq) */
+
 QUAD creer_quad(char *etiq,int op,char *arg1,char *arg2,char *res)
 {QUAD qd;int lres;
   qd=(struct cellquad *)malloc(sizeof(struct cellquad));
   if (etiq !=NULL)
-    {qd->ETIQ=indentAlloc();
+    {qd->ETIQ=(char *)malloc(MAXIDENT*sizeof(char));
       strcpy(qd->ETIQ,etiq);}
   qd->OPER=op;
   if (arg1 !=NULL)
-    {qd->ARG1=indentAlloc();
+    {qd->ARG1=(char *)malloc(MAXIDENT*sizeof(char));
       strcpy(qd->ARG1,arg1);}
   if (arg2 !=NULL)
-    {qd->ARG2=indentAlloc();
+    {qd->ARG2=(char *)malloc(MAXIDENT*sizeof(char));
       strcpy(qd->ARG2, arg2);}
   if (res!= NULL)
     {lres=strlen(res);

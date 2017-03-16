@@ -43,6 +43,8 @@ extern int evaluate(int oper, int arg1, int arg2);
 
 extern int interprete(Environment *environment, nodeType *lexeme);
 
-extern int execute(Environment *environment, nodeType *lexeme);
+extern int executeINT(Environment *environment, nodeType *lexeme);
+
+extern int executeCOM(Environment *environment, nodeType *lexeme);
 
 #endif

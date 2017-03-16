@@ -8,9 +8,9 @@ SOURCES_Y := $(wildcard *.y)
 #SOURCES_L := $(wildcard *.l)
 SOURCES_L = iimp.l
 
-OBJECTS = y.tab.o lex.yy.o interpreterIMP.o #environment.o
+OBJECTS = y.tab.o lex.yy.o interpreterIMP.o compilerIMP.o bilquad.o #environment.o
 
-PROGS = iimp interpreterC3A
+PROGS = iimp interpreterC3A 
 
 .PHONY: all
 all: $(PROGS)
@@ -28,6 +28,13 @@ interpreterC3A.yy.o: interpreterC3A.yy.c includes/environment.h includes/bilquad
 
 interpreterC3A.yy.c: interpreterC3A.l
 	lex -o $@ $<
+	
+# Compiler of Code à 3 Adresses (C3A)
+
+
+compilerIMP.o: compilerIMP.c includes/iimp.h includes/environment.h includes/bilquad.h y.tab.h
+	$(CC) -c $(CFLAGS) $(CPPFLAGS) -o $@ $<
+
 
 bilquad.o: utils/bilquad.c includes/bilquad.h includes/environment.h
 	$(CC) -c $(CFLAGS) $(CPPFLAGS) -o $@ $<

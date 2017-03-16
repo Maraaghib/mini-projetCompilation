@@ -13,7 +13,7 @@ nodeType *operation(int lexeme, int nbOper, ...);
 
 int yylex();
 int yyerror(const char *s);
-extern int execute(Environment *environment, nodeType *lexeme);
+extern int executeCOM(Environment *environment, nodeType *lexeme);
 %}
 
 %union{
@@ -41,7 +41,7 @@ F = Facteur
 */
 
 // Faire un test pour exécuter soit l'interpréteur soit le compilateur de IMP
-program : C { Environment environment = (Environment)malloc(sizeof(struct sEnvironment)); execute(&environment, $1); };
+program : C { Environment environment = (Environment)malloc(sizeof(struct sEnvironment)); executeCOM(&environment, $1); };
 
 C0	: V Af E			{$$ = operation(Af, 2, identifier($1), $3); }
  	| Sk				{ $$ = operation(Sk, 2, NULL, NULL); }

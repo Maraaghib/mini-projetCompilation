@@ -109,7 +109,7 @@ int interprete(Environment *environment, nodeType *lexeme) {
     return 0;
 }
 
-int execute(Environment *environment, nodeType *lexeme) {
+int executeINT(Environment *environment, nodeType *lexeme) {
     int result = interprete(environment, lexeme);
     printEnvironment(*environment);
     return result;
