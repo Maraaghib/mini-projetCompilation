@@ -74,13 +74,15 @@ int numET = 0;
 int numCT = 0;
 int numVA = 0;
 
-int compileIMP(Environment *environment, nodeType *lexeme) {
+char *compileIMP(Environment *environment, nodeType *lexeme) {
     QUAD instruct;
     char str[15];
     char *etiq;
     int oper;
     char *arg1;
     char *arg2;
+    char *val1;
+    char *val2;
     char *dest;
     int ret;
     int jmp;
@@ -89,29 +91,11 @@ int compileIMP(Environment *environment, nodeType *lexeme) {
 
     if(!lexeme) return 0;
     switch (lexeme->type) {
-        case typeCons:  sprintf(str, "ET%d", numET++);
-                        etiq = strdup(str);
-                        oper = AFc;
-                        arg1 = int2Str(lexeme->cons.value);
-                        arg2 = strdup("");
-                        sprintf(str, "CT%d", numCT++);
-                        dest = strdup(str);
-                        Quad = creer_quad(etiq, oper, arg1, arg2, dest);
-                        tmp = creer_bilquad(Quad);
-                        bilquad = concatq(bilquad, tmp);
-                        break;
+        case typeCons:  sprintf(str, "%d", lexeme->cons.value);
+                        return strdup(str);
 
-        case typeIdent: sprintf(str, "ET%d", numET++); // Doit tout simplement renvoyer l'identifiant
-                        etiq = strdup(str);
-                        oper = AF;
-                        arg1 = strdup(lexeme->ident.value);
-                        sprintf(str, "VA%d", numVA++);
-                        arg2 = strdup(lexeme->ident.value);
-                        dest = strdup("");
-                        Quad = creer_quad(etiq, oper, arg1, arg2, dest);
-                        tmp = creer_bilquad(Quad);
-                        bilquad = concatq(bilquad, tmp);
-                        break;
+        case typeIdent: sprintf(str, "%s", lexeme->ident.value); // Doit tout simplement renvoyer l'identifiant
+                        return strdup(str);
 
         case typeOper:
             switch (lexeme->oper.operT) {
@@ -165,7 +149,7 @@ int compileIMP(Environment *environment, nodeType *lexeme) {
                             dest = strdup(str);
 		                    Quad = creer_quad(etiq, oper, arg1, arg2, dest);
 		                    tmp = creer_bilquad(Quad);
-		                    bilquad = concatq(bilquad, tmp);;
+		                    bilquad = concatq(bilquad, tmp);
                             // Commandes
                             compileIMP(environment, lexeme->oper.operN[1]);
                             // Jump after the else
@@ -193,11 +177,59 @@ int compileIMP(Environment *environment, nodeType *lexeme) {
                             dest = strdup("");
 		                    Quad = creer_quad(etiq, oper, arg1, arg2, dest);
 		                    tmp = creer_bilquad(Quad);
-		                    bilquad = concatq(bilquad, tmp);;
+		                    bilquad = concatq(bilquad, tmp);
                             break;
 
-                case Af:    compileIMP(environment, lexeme->oper.operN[1]);
-                            compileIMP(environment, lexeme->oper.operN[0]);
+                case Af:    //On range le sk dans la liste et tester si on a AF ou AFc 
+                            val1 = strdup(compileIMP(environment, lexeme->oper.operN[0]));
+                            val2 = strdup(compileIMP(environment, lexeme->oper.operN[1]));
+                            if((strncmp(val2, "0", 1) >= 0) && (strncmp(val2, "9", 1) <= 0)){ // Si le premier caractère est un chiffre
+                              sprintf(str, "ET%d", (numET+1));
+                              etiq = strdup(str);
+                              oper = AFc;
+                              arg1 = strdup(val2);
+                              arg2 = strdup("");
+                              sprintf(str, "CT%d", numCT++);
+                              dest = strdup(str);
+                              Quad = creer_quad(etiq, oper, arg1, arg2, dest);
+                              tmp = creer_bilquad(Quad);
+                              bilquad = concatq(bilquad, tmp);
+
+                              sprintf(str, "ET%d", numET++);
+                              numET++;
+                              etiq = strdup(str);
+                              oper = AF;
+                              arg1 = strdup(val1);
+                              sprintf(str, "CT%d", numCT++);
+                              arg2 = strdup(str);
+                              dest = strdup("");
+                              Quad = creer_quad(etiq, oper, arg1, arg2, dest);
+                              tmp = creer_bilquad(Quad);
+                              bilquad = concatq(bilquad, tmp);
+                            }
+                            else{
+                              sprintf(str, "ET%d", numET+1);
+                              etiq = strdup(str);
+                              oper = SK;
+                              arg1 = strdup("");
+                              arg2 = strdup("");
+                              dest = strdup(val2);
+                              Quad = creer_quad(etiq, oper, arg1, arg2, dest);
+                              tmp = creer_bilquad(Quad);
+                              bilquad = concatq(bilquad, tmp);
+
+                              sprintf(str, "ET%d", numET++);
+                              numET++;
+                              etiq = strdup(str);
+                              oper = AF;
+                              arg1 = strdup(val1);
+                              arg2 = strdup(val2);
+                              dest = strdup("");
+                              Quad = creer_quad(etiq, oper, arg1, arg2, dest);
+                              tmp = creer_bilquad(Quad);
+                              bilquad = concatq(bilquad, tmp);
+                            }
+
                             break;
 
 
@@ -208,15 +240,27 @@ int compileIMP(Environment *environment, nodeType *lexeme) {
                 case Mu:    break;//return compileIMP(environment, lexeme->oper.operN[0]) * compileIMP(environment, lexeme->oper.operN[1]);
             }
     }
+
+    sprintf(str, "ET%d", (numET++));
+    etiq = strdup(str);
+    oper = ST;
+    arg1 = strdup("");
+    arg2 = strdup("");
+    dest = strdup("");
+    Quad = creer_quad(etiq, oper, arg1, arg2, dest);
+    tmp = creer_bilquad(Quad);
+    bilquad = concatq(bilquad, tmp);
     return 0;
 }
 
 int executeCOM(Environment *environment, nodeType *lexeme) {
     QUAD Quad = bilquad.first;
-    int result = compileIMP(environment, lexeme);
+    compileIMP(environment, lexeme);
+    printf("\n");
     printBilquad(bilquad);
+    printf("\n");
     /*while (Quad->NEXT != NULL) {
         printf("%s  :%s :%s  :%s  :%s\n", Quad->ETIQ, nomop(Quad->OPER), Quad->ARG1, Quad->ARG2, Quad->DEST);
     }*/
-    return result;
+    return 1;
 }
