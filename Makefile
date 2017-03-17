@@ -10,7 +10,7 @@ SOURCES_L = iimp.l
 
 OBJECTS = y.tab.o lex.yy.o interpreterIMP.o compilerIMP.o bilquad.o #environment.o
 
-PROGS = iimp interpreterC3A 
+PROGS = iimp interpreterC3A compilerC3A
 
 .PHONY: all
 all: $(PROGS)
@@ -28,7 +28,18 @@ interpreterC3A.yy.o: interpreterC3A.yy.c includes/environment.h includes/bilquad
 
 interpreterC3A.yy.c: interpreterC3A.l
 	lex -o $@ $<
-	
+
+
+compilerC3A: compilerC3A.yy.o environment.o bilquad.o
+	$(CC) $^ $(LDFLAGS) -o $@
+
+compilerC3A.yy.o: compilerC3A.yy.c includes/environment.h includes/bilquad.h
+	$(CC) -c $(CFLAGS) $(CPPFLAGS) -o $@ $<
+
+compilerC3A.yy.c: compilerC3A.l
+	lex -o $@ $<
+
+
 # Compiler of Code à 3 Adresses (C3A)
 
 
