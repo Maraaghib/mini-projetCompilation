@@ -30,6 +30,7 @@ extern int executeCOM(Environment *environment, nodeType *lexeme);
 %nonassoc El
 %left Pl Mo
 %left Mu
+%left '('
 %type<nTPtr> C0 C E T F
 
 %%
