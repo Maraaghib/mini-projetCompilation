@@ -105,8 +105,8 @@ void printQuad(QUAD qd)
 { if(strcmp(qd->ETIQ,"") == 0)       /* Etiquette = empty word */
     {printf("%-10s ","");}
   else
-    {printf(":%-10s",qd->ETIQ);}
-  printf("%-6s ",nomop(qd->OPER));
+    {printf("%-10s",qd->ETIQ);}
+  printf(":%-6s ",nomop(qd->OPER));
   if (qd->ARG1!=NULL)
     {printf(":%-10s",qd->ARG1);}
   else
