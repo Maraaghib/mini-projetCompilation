@@ -89,6 +89,7 @@ char *compileIMP(Environment *environment, nodeType *lexeme) {
     int op;
     int ret;
     int jmp;
+    int numTmp;
     QUAD Quad;
     BILQUAD tmp;
 
@@ -195,11 +196,11 @@ char *compileIMP(Environment *environment, nodeType *lexeme) {
     		                    bilquad = concatq(bilquad, tmp);
                             break;
 
-                case Af:    //On range le sk dans la liste et tester si on a AF ou AFc
+                case Af:    numTmp = numET++; //On range le sk dans la liste et tester si on a AF ou AFc
                             val1 = strdup(compileIMP(environment, lexeme->oper.operN[0]));
                             val2 = strdup(compileIMP(environment, lexeme->oper.operN[1]));
                             if((strncmp(val2, "0", 1) >= 0) && (strncmp(val2, "9", 1) <= 0)){ // Si le premier caractère est un chiffre
-                              sprintf(str, "ET%d", (numET+1));
+                              sprintf(str, "ET%d", (numET++));
                               etiq = strdup(str);
                               oper = AFc;
                               arg1 = strdup(val2);
@@ -224,7 +225,7 @@ char *compileIMP(Environment *environment, nodeType *lexeme) {
                             }
                             else{
                                 if(is_oper == 0){
-                                    sprintf(str, "ET%d", numET+1);
+                                    sprintf(str, "ET%d", numET++);
                                     etiq = strdup(str);
                                     oper = SK;
                                     arg1 = strdup("");
@@ -235,8 +236,8 @@ char *compileIMP(Environment *environment, nodeType *lexeme) {
                                     bilquad = concatq(bilquad, tmp);
                                 }
 
-                              sprintf(str, "ET%d", numET++);
-                              numET++;
+                              sprintf(str, "ET%d", numTmp);
+                              numET+= (is_oper != 0) ? 0 : 1;
                               etiq = strdup(str);
                               oper = AF;
                               arg1 = strdup(val1);
@@ -271,10 +272,11 @@ char *compileIMP(Environment *environment, nodeType *lexeme) {
                 case Mu:    //return compileIMP(environment, lexeme->oper.operN[0]) * compileIMP(environment, lexeme->oper.operN[1]);
 
                 case Pl:    is_oper = 1;
+                            numTmp = numET + 1;
                             val1 = strdup(compileIMP(environment, lexeme->oper.operN[0]));
                             val2 = strdup(compileIMP(environment, lexeme->oper.operN[1]));
                             if((strncmp(val1, "0", 1) < 0) || (strncmp(val1, "9", 1) > 0)){ // Si le premier caractère n'est pas un chiffre
-                                sprintf(str, "ET%d", (numET+1));
+                                sprintf(str, "ET%d", (numTmp++));
                                 etiq = strdup(str);
                                 oper = SK;
                                 arg1 = strdup("");
@@ -285,7 +287,7 @@ char *compileIMP(Environment *environment, nodeType *lexeme) {
                                 bilquad = concatq(bilquad, tmp);
                             }
                             if((strncmp(val2, "0", 1) < 0) || (strncmp(val2, "9", 1) > 0)){ // Si le premier caractère n'est pas un chiffre
-                                sprintf(str, "ET%d", (numET+1));
+                                sprintf(str, "ET%d", (numTmp++));
                                 etiq = strdup(str);
                                 oper = SK;
                                 arg1 = strdup("");
@@ -296,8 +298,8 @@ char *compileIMP(Environment *environment, nodeType *lexeme) {
                                 bilquad = concatq(bilquad, tmp);
                             }
 
-                            if((strncmp(val1, "0", 1) >= 0) && (strncmp(val1, "9", 1) <= 0)){ // Si le premier caractère n'est pas un chiffre
-                                sprintf(str, "ET%d", (numET+1));
+                            if((strncmp(val1, "0", 1) >= 0) && (strncmp(val1, "9", 1) <= 0)){ // Si le premier caractère est un chiffre
+                                sprintf(str, "ET%d", (numTmp++));
                                 etiq = strdup(str);
                                 oper = AFc;
                                 arg1 = strdup(val1);
@@ -308,8 +310,8 @@ char *compileIMP(Environment *environment, nodeType *lexeme) {
                                 tmp = creer_bilquad(Quad);
                                 bilquad = concatq(bilquad, tmp);
                             }
-                            if((strncmp(val2, "0", 1) >= 0) && (strncmp(val2, "9", 1) <= 0)){ // Si le premier caractère n'est pas un chiffre
-                                sprintf(str, "ET%d", (numET+1));
+                            if((strncmp(val2, "0", 1) >= 0) && (strncmp(val2, "9", 1) <= 0)){ // Si le premier caractère est un chiffre
+                                sprintf(str, "ET%d", (numTmp++));
                                 etiq = strdup(str);
                                 oper = AFc;
                                 arg1 = strdup(val2);
@@ -330,6 +332,7 @@ char *compileIMP(Environment *environment, nodeType *lexeme) {
                                 op = MU;
 
                               sprintf(str, "ET%d", (numET++));
+                              numET += 2;
                               etiq = strdup(str);
                               oper = op;
                               arg1 = val1; // Le résultat de l'instruction AFc
