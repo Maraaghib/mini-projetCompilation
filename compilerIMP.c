@@ -74,6 +74,7 @@ int numET = 0;
 int numCT = 0;
 int numVA = 0;
 int is_oper = 0;
+int is_seq = 0;
 
 char *compileIMP(Environment *environment, nodeType *lexeme) {
     QUAD instruct;
@@ -249,8 +250,22 @@ char *compileIMP(Environment *environment, nodeType *lexeme) {
                             break;
 
 
-                case Se:    compileIMP(environment, lexeme->oper.operN[0]); return compileIMP(environment, lexeme->oper.operN[1]);
-
+                case Se:    is_seq = 1;
+                            compileIMP(environment, lexeme->oper.operN[0]); compileIMP(environment, lexeme->oper.operN[1]);
+                            is_seq = 0;
+                            break;
+                case Sk:    is_seq = 1;
+                            sprintf(str, "ET%d", (numET++));
+                            etiq = strdup(str);
+                            oper = SK;
+                            arg1 = strdup("");
+                            arg2 = strdup("");
+                            dest = strdup("");
+                            Quad = creer_quad(etiq, oper, arg1, arg2, dest);
+                            tmp = creer_bilquad(Quad);
+                            bilquad = concatq(bilquad, tmp);
+                            is_seq = 0;
+                            return NULL;
 
                 case Mo:    //return compileIMP(environment, lexeme->oper.operN[0]) - compileIMP(environment, lexeme->oper.operN[1]);
                 case Mu:    //return compileIMP(environment, lexeme->oper.operN[0]) * compileIMP(environment, lexeme->oper.operN[1]);
@@ -317,32 +332,34 @@ char *compileIMP(Environment *environment, nodeType *lexeme) {
                               sprintf(str, "ET%d", (numET++));
                               etiq = strdup(str);
                               oper = op;
-                              arg1 = dest; // Le résultat de l'instruction AFc
-                              arg2 = strdup(val1);
+                              arg1 = val1; // Le résultat de l'instruction AFc
+                              arg2 = strdup(dest);
                               sprintf(str, "VA%d", numVA++);
                               dest = strdup(str);
                               Quad = creer_quad(etiq, oper, arg1, arg2, dest);
                               tmp = creer_bilquad(Quad);
                               bilquad = concatq(bilquad, tmp);
                             return strdup(str);
+                default: break;
             }
+        default: break;
     }
-
-    sprintf(str, "ET%d", (numET++));
-    etiq = strdup(str);
-    oper = ST;
-    arg1 = strdup("");
-    arg2 = strdup("");
-    dest = strdup("");
-    Quad = creer_quad(etiq, oper, arg1, arg2, dest);
-    tmp = creer_bilquad(Quad);
-    bilquad = concatq(bilquad, tmp);
+    // The last instruction which stops the execution
+    if(is_seq == 0){
+      
+    }
     return 0;
 }
 
 int executeCOM(Environment *environment, nodeType *lexeme) {
     QUAD Quad = bilquad.first;
     compileIMP(environment, lexeme);
+    char str[20];
+    sprintf(str, "ET%d", (numET++));
+    char *etiq = strdup(str);
+    Quad = creer_quad(etiq, ST, "", "", "");
+    BILQUAD tmp = creer_bilquad(Quad);
+    bilquad = concatq(bilquad, tmp);
     printf("\n");
     printBilquad(bilquad);
     printf("\n");
