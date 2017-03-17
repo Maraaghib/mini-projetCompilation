@@ -54,8 +54,6 @@
 											}
 [ \t\n]+ ; /* ignore whitespace */
 
-. {printf("Expression error !\n"); return EXIT_FAILURE;}
-
 %%
 
 void echo(int n,char *etiq, char *oper, char *arg1, char *arg2) {
@@ -119,10 +117,11 @@ void printInstructs() {
 }
 
 int main(int argc,char *argv[]) {
+	//BEGIN(ETIQUETTE);
     char buf[128];
     int current = 0;
 	yylex();
-	ENV environment = Envalloc();
+	Environment environment = envirAlloc();
 	QUAD quad = bilquad.first;
 	//Init all variables with a memory case associated with it name
 	while(quad != NULL) {
@@ -246,7 +245,7 @@ int main(int argc,char *argv[]) {
 	    if(environment->identifier != NULL && strcmp(environment->identifier,"(null)") != 0 )  {
 	        tmpArr[ind++] = strdup(environment->identifier);
 	    }
-	    environment = environment->NEXT;
+	    environment = environment->next;
 	}
 	for(int i = ind-1; i >= 0; i--) {
 	    printf("%s:\t.long 0\n",tmpArr[i]);
