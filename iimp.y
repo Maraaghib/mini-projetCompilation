@@ -1,5 +1,42 @@
 %error-verbose
 %{
+/*
+
+PRENOM: Serigne Amsatou
+NOM:    SEYE
+
+1) Interpréteur du langage IMP: ./iimp --intIMP
+    - Le fichier iimp.l
+    - Le fichier iimp.y
+    - Le fichier interpreterIMP.c (la fonction interprete(...))
+    - Le module iimp.h
+    - Le module environment.h
+    - Le module y.tab.h
+
+2) Interpréteur du langage C3A: ./interpreterC3A
+    - Le fichier interpreterC3A.l (la fonction interpretC3A(...))
+    - Le module environment.h
+    - Le module bilquad.h
+
+3) Compilateur du langage IMP: ./iimp --compIMP
+    - Le fichier compilerIMP.l (la fonction compileIMP(...))
+    - Le fichier iimp.y
+    - Le module iimp.h
+    - Le module environment.h
+    - Le module bilquad.h
+    - Le module y.tab.h
+
+4) Compilateur du langage C3A: ./compiilerC3A
+    - Le fichier compilerC3A.l (la fonction main(...))
+    - Le module environment.h
+    - Le module bilquad.h
+
+*/
+
+
+
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
@@ -143,6 +180,6 @@ int main(int argc, char **argv){
         return EXIT_FAILURE;
     }
     choice = strdup(argv[1]);
-  yyparse(); //Il lance l'analyseur syntaxique qui lui appelle le yylex()
+  yyparse(); 
   return 0;
 }
