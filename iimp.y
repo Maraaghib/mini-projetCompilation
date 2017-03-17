@@ -10,10 +10,11 @@
 nodeType *constant(int value);
 nodeType *identifier(char* val);
 nodeType *operation(int lexeme, int nbOper, ...);
-
+char *choice;
 int yylex();
 int yyerror(const char *s);
-extern int executeCOM(Environment *environment, nodeType *lexeme);
+char *strdup(const char *s);
+void usage(void);
 %}
 
 %union{
@@ -42,7 +43,14 @@ F = Facteur
 */
 
 // Faire un test pour exécuter soit l'interpréteur soit le compilateur de IMP
-program : C { Environment environment = (Environment)malloc(sizeof(struct sEnvironment)); executeCOM(&environment, $1); };
+program : C {   Environment environment = (Environment)malloc(sizeof(struct sEnvironment)); 
+                if(strcmp(choice, "--intIMP") == 0)
+                    executeINT(&environment, $1);
+                else if(strcmp(choice, "--compIMP") == 0)
+                    executeCOM(&environment, $1); 
+                else
+                    usage();
+            };
 
 C0	: V Af E			{$$ = operation(Af, 2, identifier($1), $3); }
  	| Sk				{ $$ = operation(Sk, 2, NULL, NULL); }
@@ -125,8 +133,16 @@ int yyerror(const char *s){
   return 0;
 }
 
+void usage(){
+    perror("\nUnknown command !\nUsage: ./iimp [--intIMP] | [--compIMP] < inputs/<source>*.imp\n");
+}
 
-int main(int argn, char **argv){
+int main(int argc, char **argv){
+    if(argc != 2){
+        usage();
+        return EXIT_FAILURE;
+    }
+    choice = strdup(argv[1]);
   yyparse(); //Il lance l'analyseur syntaxique qui lui appelle le yylex()
   return 0;
 }
