@@ -1,4 +1,4 @@
-# Mini-project: interpretation and compilation of the IMP language
+## Mini-project: interpretation and compilation of the IMP language
 
 
  ### To compile the project, type:<br>
