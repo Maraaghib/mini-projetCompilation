@@ -20,6 +20,8 @@
 "+" 		{return Pl;}
 "-" 		{return Mo;}
 "*" 		{return Mu;}
+"("			{ return yytext[0]; }
+")"			{ return yytext[0]; }
 [A-Za-z](_|[A-Za-z]|[0-9])*	{yylval.ident = strdup(yytext); return V;}
 ([1-9][0-9]*)|0 	{yylval.ival = atoi(yytext); return I;}
 .|\n 		{}
